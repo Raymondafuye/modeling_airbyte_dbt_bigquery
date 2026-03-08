@@ -1,0 +1,98 @@
+version: 2
+
+models:
+  - name: fct_trips
+    description: "Fact table containing all trip transactions with associated metrics. Incrementally loaded based on created_at timestamp."
+    config:
+      tags: ['finance', 'operations']
+    columns:
+      - name: trip_id
+        description: "Primary key. Unique identifier for each trip."
+        tests:
+          - not_null
+          - unique
+      - name: rider_id
+        description: "Foreign key to dim_riders."
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('dim_riders')
+                field: rider_id
+      - name: driver_id
+        description: "Foreign key to dim_drivers."
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('dim_drivers')
+                field: driver_id
+      - name: city_id
+        description: "Foreign key to dim_cities."
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('dim_cities')
+                field: city_id
+      - name: trip_status
+        description: "Status of the trip: completed, cancelled, or no_show."
+      - name: trip_duration_minutes
+        description: "Business metric: Duration of trip in minutes from pickup to dropoff."
+      - name: net_revenue
+        description: "Business metric: Revenue after deducting payment processing fees."
+      - name: is_fraud_suspect
+        description: "Business metric: Flag indicating potential fraudulent activity."
+
+  - name: dim_drivers
+    description: "Dimension table for driver attributes and lifetime metrics."
+    columns:
+      - name: driver_id
+        description: "Primary key. Unique identifier for each driver."
+        tests:
+          - not_null
+          - unique
+      - name: lifetime_trips
+        description: "Business metric: Total number of trips completed by driver."
+
+  - name: dim_riders
+    description: "Dimension table for rider attributes and lifetime value."
+    columns:
+      - name: rider_id
+        description: "Primary key. Unique identifier for each rider."
+        tests:
+          - not_null
+          - unique
+      - name: lifetime_value
+        description: "Business metric: Total successful payment amount from rider."
+
+  - name: dim_cities
+    description: "Dimension table for city reference data."
+    columns:
+      - name: city_id
+        description: "Primary key. Unique identifier for each city."
+        tests:
+          - not_null
+          - unique
+
+  - name: dim_payments
+    description: "Dimension table for payment reference data."
+    columns:
+      - name: payment_id
+        description: "Primary key. Unique identifier for each payment transaction."
+        tests:
+          - not_null
+          - unique 
+      - name: trip_id
+        description: "Foreign key to fct_trips."
+      - name: payment_status
+        description: "Status of the payment transaction."
+      - name: payment_provider
+        description: "Provider of the payment method."
+      - name: currency
+        description: "Currency of the payment."
+      - name: amount
+        description: "Amount of the payment."
+      - name: net_revenue
+        description: "Net revenue after deducting payment processing fees."
+       

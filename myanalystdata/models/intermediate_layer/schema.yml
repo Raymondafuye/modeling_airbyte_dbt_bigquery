@@ -1,0 +1,103 @@
+version: 2
+
+models:
+  - name: int_duration_min
+    description: "Calculates trip duration in minutes from pickup to dropoff."
+    columns:
+      - name: trip_id
+        description: "Primary key."
+        tests:
+          - not_null
+      - name: trip_duration_minutes
+        description: "Business metric: Trip duration in minutes."
+
+  - name: int_driver_life_time_trips
+    description: "Aggregates total trips per driver."
+    columns:
+      - name: driver_id
+        description: "Primary key."
+        tests:
+          - not_null
+      - name: driver_lifetime_trips
+        description: "Business metric: Total trips completed by driver."
+
+  - name: rider_lifetime_value
+    description: "Calculates total successful payment amount per rider."
+    columns:
+      - name: rider_id
+        description: "Primary key."
+        tests:
+          - not_null
+      - name: lifetime_value
+        description: "Business metric: Total successful payments from rider."
+
+  - name: int_net_revenue
+    description: "Calculates net revenue after deducting processing fees."
+    tags: ['finance']
+    columns:
+      - name: payment_id
+        description: "Primary key."
+        tests:
+          - not_null
+      - name: net_revenue
+        description: "Business metric: Amount minus fee for successful payments."
+
+  - name: int_fraud_indicators
+    description: "Consolidates fraud detection signals across trips."
+    tags: ['fraud']
+    columns:
+      - name: trip_id
+        description: "Primary key."
+        tests:
+          - not_null
+      - name: is_fraud_suspect
+        description: "Business metric: True if any fraud indicator is triggered."
+      - name: is_extreme_surge
+        description: "Fraud indicator: Surge multiplier > 10."
+      - name: is_duplicate_payment
+        description: "Fraud indicator: Multiple successful payments for same trip."
+      - name: is_failed_payment_on_completed_trip
+        description: "Fraud indicator: Completed trip with failed payment."
+
+  - name: int_duplicate_trip_payments
+    description: "Identifies trips with multiple successful payments."
+    tags: ['fraud']
+    columns:
+      - name: trip_id
+        tests:
+          - not_null
+      - name: is_duplicate_payment
+        description: "True if payment_count > 1."
+      - name: payment_count
+        description: "Number of successful payments for trip."
+
+  - name: int_extreme_surge
+    description: "Flags trips with surge multiplier > 10."
+    tags: ['fraud']
+    columns:
+      - name: trip_id
+        tests:
+          - not_null
+      - name: is_extreme_surge
+        description: "True if surge_multiplier > 10."
+      - name: surge_category
+        description: "Classification: no_surge, low_surge, medium_surge, high_surge, extreme_surge."
+
+  - name: int_failed_payment_on_completed_trip
+    description: "Identifies completed trips with failed payments."
+    tags: ['fraud']
+    columns:
+      - name: trip_id
+        tests:
+          - not_null
+      - name: is_failed_payment_on_completed_trip
+        description: "True if trip completed but payment failed."
+
+  - name: int_corporate_trip_flag
+    description: "Flags corporate trips for segmentation analysis."
+    columns:
+      - name: trip_id
+        tests:
+          - not_null
+      - name: corporate_trip_flag
+        description: "1 if corporate trip, 0 otherwise."

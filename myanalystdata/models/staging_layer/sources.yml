@@ -1,0 +1,213 @@
+version: 2
+
+sources:
+  - name: Rider_Project
+    description: "Raw data from Airbyte sync containing ride-sharing platform operational data."
+    tables:
+      - name: cities_raw
+        description: "Reference data for cities where the platform operates."
+        columns:
+          - name: _airbyte_raw_id
+            data_type: string
+          - name: _airbyte_extracted_at
+            data_type: timestamp
+          - name: _airbyte_meta
+            data_type: json
+          - name: _airbyte_generation_id
+            data_type: int64
+          - name: city_id
+            data_type: int64
+            description: "Primary key for cities."
+            tests:
+              - not_null
+              - unique
+          - name: country
+            data_type: string
+            description: "Country where city is located."
+          - name: city_name
+            data_type: string
+            description: "Name of the city."
+          - name: launch_date
+            data_type: date
+            description: "Date when platform launched in this city."
+
+      - name: driver_status_events_raw
+        description: "High-volume event log tracking driver online/offline status changes."
+        columns:
+          - name: _airbyte_raw_id
+            data_type: string
+          - name: _airbyte_extracted_at
+            data_type: timestamp
+          - name: _airbyte_meta
+            data_type: json
+          - name: _airbyte_generation_id
+            data_type: int64
+          - name: status
+            data_type: string
+            description: "Driver status: online or offline."
+          - name: event_id
+            data_type: int64
+            description: "Primary key for status events."
+            tests:
+              - not_null
+              - unique
+          - name: driver_id
+            data_type: int64
+            description: "Foreign key to drivers."
+          - name: event_timestamp
+            data_type: datetime
+            description: "Timestamp when status change occurred."
+
+      - name: drivers_raw
+        description: "Driver master data including status, ratings, and vehicle assignments."
+        columns:
+          - name: _airbyte_raw_id
+            data_type: string
+          - name: _airbyte_extracted_at
+            data_type: timestamp
+          - name: _airbyte_meta
+            data_type: json
+          - name: _airbyte_generation_id
+            data_type: int64
+          - name: rating
+            data_type: numeric
+            description: "Average driver rating (0-5)."
+          - name: city_id
+            data_type: int64
+            description: "Foreign key to cities."
+          - name: driver_id
+            data_type: int64
+            description: "Primary key for drivers."
+            tests:
+              - not_null
+              - unique
+          - name: created_at
+            data_type: datetime
+          - name: updated_at
+            data_type: datetime
+          - name: vehicle_id
+            data_type: string
+            description: "Current vehicle assigned to driver."
+          - name: driver_status
+            data_type: string
+            description: "Driver lifecycle status."
+          - name: onboarding_date
+            data_type: date
+            description: "Date driver completed onboarding."
+
+      - name: payments_raw
+        description: "Payment transaction records for trips."
+        columns:
+          - name: _airbyte_raw_id
+            data_type: string
+          - name: _airbyte_extracted_at
+            data_type: timestamp
+          - name: _airbyte_meta
+            data_type: json
+          - name: _airbyte_generation_id
+            data_type: int64
+          - name: fee
+            data_type: numeric
+            description: "Platform processing fee."
+          - name: amount
+            data_type: numeric
+            description: "Gross payment amount."
+          - name: trip_id
+            data_type: int64
+            description: "Foreign key to trips."
+          - name: currency
+            data_type: string
+          - name: created_at
+            data_type: datetime
+          - name: payment_id
+            data_type: int64
+            description: "Primary key for payments."
+            tests:
+              - not_null
+              - unique
+          - name: payment_status
+            data_type: string
+            description: "Payment outcome: success or failed."
+          - name: payment_provider
+            data_type: string
+            description: "Payment processor used."
+
+      - name: riders_raw
+        description: "Rider registration and profile data."
+        columns:
+          - name: _airbyte_raw_id
+            data_type: string
+          - name: _airbyte_extracted_at
+            data_type: timestamp
+          - name: _airbyte_meta
+            data_type: json
+          - name: _airbyte_generation_id
+            data_type: int64
+          - name: country
+            data_type: string
+          - name: rider_id
+            data_type: int64
+            description: "Primary key for riders."
+            tests:
+              - not_null
+              - unique
+          - name: created_at
+            data_type: datetime
+          - name: signup_date
+            data_type: date
+          - name: referral_code
+            data_type: string
+
+      - name: trips_raw
+        description: "Core transactional data for all ride requests and completions."
+        config:
+          freshness:
+            warn_after: {count: 1, period: hour}
+            error_after: {count: 2, period: hour}
+            loaded_at_field: updated_at
+        columns:
+        
+          - name: _airbyte_raw_id
+            data_type: string
+          - name: _airbyte_extracted_at
+            data_type: timestamp
+          - name: _airbyte_meta
+            data_type: json
+          - name: _airbyte_generation_id
+            data_type: int64
+          - name: status
+            data_type: string
+          - name: city_id
+            data_type: int64
+          - name: trip_id
+            data_type: int64
+            description: "Primary key for trips."
+            tests:
+              - not_null
+              - unique
+          - name: rider_id
+            data_type: int64
+          - name: driver_id
+            data_type: int64
+          - name: pickup_at
+            data_type: datetime
+          - name: created_at
+            data_type: datetime
+          - name: dropoff_at
+            data_type: datetime
+          - name: updated_at
+            data_type: datetime
+          - name: vehicle_id
+            data_type: string
+          - name: actual_fare
+            data_type: numeric
+          - name: is_corporate
+            data_type: boolean
+          - name: requested_at
+            data_type: datetime
+          - name: estimated_fare
+            data_type: numeric
+          - name: payment_method
+            data_type: string
+          - name: surge_multiplier
+            data_type: numeric
