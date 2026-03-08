@@ -32,7 +32,7 @@ clean-targets:         # directories to be removed by `dbt clean`
 models:
   myanalystdata:
     staging_layer:
-      +materialized: table
+      +materialized: view
       +tags: ['staging']
     intermediate_layer:
       +materialized: view

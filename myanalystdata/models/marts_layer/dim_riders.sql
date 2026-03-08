@@ -3,7 +3,7 @@
         meta={
          'owner': 'data_engineering_team',
     },
-        materialized='view',
+        materialized='table',
         tags=['operations']
     )
 }}

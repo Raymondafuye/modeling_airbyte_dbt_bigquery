@@ -59,7 +59,6 @@ raw → staging → intermediate → marts
   - `dim_riders`: Rider profiles and LTV
   - `dim_payments`: Payment made for trips
   - `dim_cities`: City reference data
-  - `dim_dates`: Date dimension for time-based analysis
 
 ## Incremental Models
 
