@@ -1,18 +1,23 @@
 # Ride-Sharing Analytics Platform - dbt Project
 
 ## Project Overview
-This dbt project transforms raw ride-sharing operational data into analytics-ready models supporting business intelligence, fraud detection, and operational reporting.
+This dbt project transforms raw ride-sharing operational data that is extracted from postgresql into a bigquery database for a analytics-ready models supporting business intelligence, fraud detection, and operational reporting.
 
-## Architecture
+## Architecture Diagram
 
-### Layered Modeling Approach
+<img width="1008" height="359" alt="image" src="https://github.com/user-attachments/assets/71bfa420-8a77-45a4-8bd9-c2eeb9c29a92" />
+
+## Entity Relationship Diagram
+<img width="1417" height="609" alt="image" src="https://github.com/user-attachments/assets/e6d7dff5-e5fe-47a0-b331-1d473a1f43bd" />
+
+### Data flow explanation
 ```
 raw → staging → intermediate → marts
 ```
 
 #### 1. Staging Layer (`staging_layer/`)
 - **Purpose**: Clean, deduplicate, and standardize raw data
-- **Materialization**: Views
+- **Materialization**: Table
 - **Models**:
   - `stg_trips`: Cleaned trip transactions
   - `stg_drivers`: Driver master data
@@ -25,12 +30,11 @@ raw → staging → intermediate → marts
 - Column renaming to snake_case
 - Data type casting (int64, numeric, timestamp)
 - Deduplication using ROW_NUMBER() over primary keys
-- Removal of null primary keys
-- Timestamp standardization to UTC
+- Removal of null primary keys using the where statement
 
 #### 2. Intermediate Layer (`intermediate_layer/`)
 - **Purpose**: Reusable business logic and metrics
-- **Materialization**: Ephemeral (not persisted)
+- **Materialization**: View
 - **Models**:
   - `int_duration_min`: Trip duration calculation
   - `int_driver_life_time_trips`: Driver trip counts
@@ -53,6 +57,7 @@ raw → staging → intermediate → marts
 - **Dimension Tables**:
   - `dim_drivers`: Driver attributes and lifetime metrics
   - `dim_riders`: Rider profiles and LTV
+  - `dim_payments`: Payment made for trips
   - `dim_cities`: City reference data
   - `dim_dates`: Date dimension for time-based analysis
 
@@ -62,6 +67,7 @@ raw → staging → intermediate → marts
 
 **Why Incremental?**
 - Trips table grows continuously (high volume)
+- Included a partition for speedy recovery of data
 - Full refresh would be expensive and time-consuming
 - Only new/updated trips need processing
 - Reduces compute costs and runtime
@@ -69,10 +75,12 @@ raw → staging → intermediate → marts
 **Implementation**:
 ```sql
 config(
-    materialized='incremental',
-    unique_key='trip_id',
-    on_schema_change='fail'
-)
+        materialized='incremental',
+        unique_key='trip_id',
+        partition_by={'field': 'created_at', 'data_type': 'timestamp'},
+        tags='operations',
+        meta={'owner': 'data_engineering_team'}
+    )
 ```
 
 **Filter Logic**:
