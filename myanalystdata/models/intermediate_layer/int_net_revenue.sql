@@ -1,6 +1,6 @@
 {{
      config(
-         materialized='table',
+         materialized='view',
          tags='operations',
          meta={'owner': 'data_engineering_team',
           'business_questions': 'What is the net revenue for each payment, accounting for fees and payment status?'}

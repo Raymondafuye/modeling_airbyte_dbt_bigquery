@@ -1,6 +1,6 @@
 {{
   config(
-    materialized = 'table',
+    materialized = 'view',
     tags=['finance'],
     meta={'owner': 'data_engineering_team'}
     )

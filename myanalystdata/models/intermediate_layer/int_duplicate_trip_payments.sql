@@ -4,7 +4,7 @@
          'owner': 'data_engineering_team',
          'business_questions': 'Are there any duplicate payments for the same trip?'
         },
-        materialized='table',
+        materialized='view',
         tags='operations'
     )
 }}

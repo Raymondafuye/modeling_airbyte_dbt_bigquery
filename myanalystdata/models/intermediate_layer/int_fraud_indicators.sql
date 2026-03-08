@@ -1,6 +1,6 @@
 {{
      config(
-         materialized='table',
+         materialized='view',
          tags='fraud',
          meta={'owner': 'data_engineering_team',
           'business_questions': 'Which trips had fraud indicators such as extreme surge, duplicate payments, or failed payments on completed trips?'}

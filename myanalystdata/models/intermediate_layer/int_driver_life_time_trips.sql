@@ -4,7 +4,7 @@
          'owner': 'data_engineering_team',
          'business_questions': 'How many trips has each driver completed in their lifetime?'
         },
-        materialized='table',
+        materialized='view',
         tags='operations'
     )
 }}

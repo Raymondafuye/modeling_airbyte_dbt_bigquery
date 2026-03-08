@@ -4,7 +4,7 @@
          'owner': 'data_engineering_team',
          'business_questions': 'Is the trip a corporate trip?'
         },
-        materialized='table',
+        materialized='view',
         tags=['operations']
     )
 }}
