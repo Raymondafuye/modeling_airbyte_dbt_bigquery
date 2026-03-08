@@ -3,7 +3,7 @@
 ## Project Overview
 This dbt project transforms raw ride-sharing operational data into analytics-ready models supporting business intelligence, fraud detection, and operational reporting.
 
-## Architecture
+## Architecture Diagram
 
 <img width="1008" height="359" alt="image" src="https://github.com/user-attachments/assets/71bfa420-8a77-45a4-8bd9-c2eeb9c29a92" />
 
