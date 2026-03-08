@@ -17,7 +17,7 @@ raw → staging → intermediate → marts
 
 #### 1. Staging Layer (`staging_layer/`)
 - **Purpose**: Clean, deduplicate, and standardize raw data
-- **Materialization**: Table
+- **Materialization**: view
 - **Models**:
   - `stg_trips`: Cleaned trip transactions
   - `stg_drivers`: Driver master data
