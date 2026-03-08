@@ -2,3 +2,5 @@
 target/
 dbt_packages/
 logs/
+
+myanalystdata-f07e9eddbbc0.json/
