@@ -80,16 +80,54 @@ raw → staging → intermediate → marts
 | **Data Quality** | Always consistent | Risk of drift if logic changes |
 | **Use Case** | Small tables, dimension tables | Large fact tables, event logs |
 
+Sample analytical queries demonstrating insights
 
-## Business Metrics
+```sql
+-- 1. failed payment on completed trips
+select
+    t.trip_id,
+    t.driver_id,
+    t.rider_id,
+    t.status,
+    p.payment_status,
+    case
+        when t.status = 'completed' and p.payment_status = 'failed' then true
+        else false
+    end as is_failed_payment_on_completed_trip
 
-| Metric | Definition | Location |
-|--------|-----------|----------|
-| **Trip Duration** | Minutes from pickup to dropoff | `int_duration_min` |
-| **Net Revenue** | Amount - Fee | `int_net_revenue` |
-| **Rider LTV** | Total successful payments per rider | `rider_lifetime_value` |
-| **Driver Lifetime Trips** | Total trips per driver | `int_driver_life_time_trips` |
-| **Fraud Suspect** | Extreme surge OR duplicate payment OR failed payment on completed trip | `int_fraud_indicators` |
+from trips t
+left join payments p
+    on t.trip_id = p.trip_id
+where t.status = 'completed'
+-- 2. duplicate trip payments
+payment_counts as (
+
+    select
+        trip_id,
+        count(*) as payment_count
+    from payments
+    where payment_status = 'success'
+    group by trip_id
+
+)
+
+select
+    p.payment_id,
+    p.trip_id,
+    p.payment_status,
+    p.payment_provider,
+    p.currency,
+    p.amount,
+    p.fee,
+    p.created_at,
+    pc.payment_count,
+    case
+        when pc.payment_count > 1 then true
+        else false
+    end as is_duplicate_payment
+
+from payments p
+left join payment_counts pc on p.trip_id = pc.trip_id
 
 
 
