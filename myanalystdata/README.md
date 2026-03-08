@@ -7,8 +7,10 @@ This dbt project transforms raw ride-sharing operational data into analytics-rea
 
 <img width="1008" height="359" alt="image" src="https://github.com/user-attachments/assets/71bfa420-8a77-45a4-8bd9-c2eeb9c29a92" />
 
+## Entity Relationship Diagram
+<img width="1417" height="609" alt="image" src="https://github.com/user-attachments/assets/e6d7dff5-e5fe-47a0-b331-1d473a1f43bd" />
 
-### Layered Modeling Approach
+### Data flow explanation
 ```
 raw → staging → intermediate → marts
 ```
