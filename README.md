@@ -9,7 +9,8 @@ This dbt project transforms raw ride-sharing operational data that is extracted 
 
 ## Line Graph
 
-<img width="1590" height="632" alt="image" src="https://github.com/user-attachments/assets/fbf2ee21-0afe-4eb2-b3f8-35ad29a8e088" />
+<img width="1602" height="652" alt="image" src="https://github.com/user-attachments/assets/fcd69c46-fe6f-4eae-82b4-a7094a93b845" />
+
 
 ## Entity Relationship Diagram
 <img width="1417" height="609" alt="image" src="https://github.com/user-attachments/assets/e6d7dff5-e5fe-47a0-b331-1d473a1f43bd" />
