@@ -127,10 +127,11 @@ select
     end as is_duplicate_payment
 
 from payments p
-left join payment_counts pc on p.trip_id = pc.trip_id
-
+left join payment_counts pc on p.trip_id = pc.trip_id```
 Line Graph
 <img width="1590" height="632" alt="image" src="https://github.com/user-attachments/assets/fbf2ee21-0afe-4eb2-b3f8-35ad29a8e088" />
+
+
 
 
 
